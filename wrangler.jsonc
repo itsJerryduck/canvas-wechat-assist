@@ -1,0 +1,19 @@
+{
+  // Worker 的名字（部署到 Cloudflare 后会成为 <name>.<你的子域>.workers.dev）
+  "name": "canvas-quest-bot",
+  "main": "worker/worker.js",
+  "compatibility_date": "2026-09-01",
+
+  "observability": {
+    "enabled": true
+  },
+
+  // KV 绑定：变量名必须是 QUEST_KV（代码里写死了）
+  // id 请填你自己的 KV 命名空间 ID（Cloudflare → Storage & databases → KV → 点进去，地址栏最后那串）
+  "kv_namespaces": [
+    {
+      "binding": "QUEST_KV",
+      "id": "在这里填你自己的 KV 命名空间 ID"
+    }
+  ]
+}
