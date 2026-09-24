@@ -48,6 +48,7 @@ Telegram 卡片长这样：
 ```
 
 ---
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/itsjerryduck/canvas-wechat-assist)
 
 ## 🧭 两种用法，任选其一
 
