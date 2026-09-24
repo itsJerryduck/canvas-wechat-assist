@@ -1,14 +1,12 @@
 name: Canvas 日课提醒
 
 on:
-  # ⏰ 定时触发（GitHub 用的是 UTC 时间，比北京时间早 8 小时）
-  # UTC 00:00 = 北京时间 早上 08:00
-  # UTC 12:00 = 北京时间 晚上 20:00
+  # UTC 00:00 = 北京时间 08:00 ；UTC 12:00 = 北京时间 20:00
   schedule:
     - cron: '0 0 * * *'
     - cron: '0 12 * * *'
 
-  # 🖱️ 允许在网页上手动点一下立刻运行（方便测试）
+  # 允许手动点一下立刻运行
   workflow_dispatch:
 
 jobs:
@@ -27,16 +25,27 @@ jobs:
       - name: 安装依赖
         run: pip install -r requirements.txt
 
-      - name: 运行日课提醒
+      # ① 发到 Telegram（带按钮的卡片，主角）
+      - name: 推送到 Telegram
+        env:
+          CANVAS_ICS_URL: ${{ secrets.CANVAS_ICS_URL }}
+          QUEST_WORKER_URL: ${{ secrets.QUEST_WORKER_URL }}
+          QUEST_WORKER_KEY: ${{ secrets.QUEST_WORKER_KEY }}
+          TZ_NAME: Asia/Shanghai
+          LOOKAHEAD_DAYS: '7'
+          MAIN_QUEST_HOURS: '72'
+          IGNORE_KEYWORDS: 'office hours,officehour,答疑'
+        run: python telegram_push.py
+
+      # ② 发到微信（可选，失败了也不影响上面那条）
+      - name: 推送到微信
+        continue-on-error: true
         env:
           CANVAS_ICS_URL: ${{ secrets.CANVAS_ICS_URL }}
           SERVERCHAN_SENDKEY: ${{ secrets.SERVERCHAN_SENDKEY }}
-          WXPUSHER_APP_TOKEN: ${{ secrets.WXPUSHER_APP_TOKEN }}
-          WXPUSHER_UIDS: ${{ secrets.WXPUSHER_UIDS }}
           TZ_NAME: Asia/Shanghai
           LOOKAHEAD_DAYS: '7'
           MAIN_QUEST_HOURS: '72'
           SEND_WHEN_EMPTY: 'true'
           IGNORE_KEYWORDS: 'office hours,officehour,答疑'
         run: python main.py
-
